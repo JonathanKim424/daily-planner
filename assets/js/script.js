@@ -1,31 +1,57 @@
-var currentDayEl = document.querySelector("#currentDay");
+var containerEl = document.querySelector(".container");
+var tasks = {};
 
 var currentDate = function() {
-    currentDayEl.textContent = moment().format("dddd, MMMM Do");
+    $("#currentDay").text(moment().format("dddd, MMMM Do"));
+
+    var currHour = moment().hour();
+    for (var i = 9; i < 18; i++) {
+        $("#ta" + i).removeClass("past present future");
+        if (currHour === i) {
+            $("#ta" + i).addClass("present");
+        }
+        if (currHour < i) {
+            $("#ta" + i).addClass("future")
+        }
+        if (currHour > i) {
+            $("#ta" + i).addClass("past")
+        }
+    }
 };
 
-var currentHour = function() {
-    var currHour = moment().hour();
-    var textareaEl;
+var loadTasks = function() {
+    tasks = JSON.parse(localStorage.getItem("tasks"));
 
-    if (currHour < 9) {
-        for (var i = 9; i < 18; i++) {
-            textareaEl = document.querySelector("#ta" + i);
-            textareaEl.className = "col-lg-9 description future";
-        }
+    if (!tasks) {
+        tasks = {
+            textID: [],
+            text: []
+        };
     }
-    else if (currHour >= 9 && currHour <= 17) {
-        for (var i = 9; i < 18; i++) {
-            textareaEl = document.querySelector("#ta" + i);
-            if (currHour < i) {
-                textareaEl.className = "col-lg-9 description future";
-            }
-            if (currHour === i) {
-                textareaEl.className = "col-lg-9 description present";
-            }
-        }
-    }
-}
+
+    $.each(tasks, function(list, arr) {
+        arr.forEach(function(task) {
+        })
+    })
+};
+
+var saveTask = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
+$("button").on("click", function() {
+    var taskID = $(this).closest("textarea").attr("id");
+
+    console.log(taskID);
+    // saveTask();
+})
+
+var taskHandler = function(event) {
+    var targetEl = event.target;
+
+
+};
 
 currentDate();
-currentHour();
+
+containerEl.addEventListener("click", taskHandler);
