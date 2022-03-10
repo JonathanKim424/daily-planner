@@ -40,6 +40,18 @@ var saveTask = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+var auditTask = function(taskID) {
+    var rowID = $("#" + taskID).closest(".row").attr("id");
+    var currTxt = $("#" + taskID).val();
+    var saveTxt = tasks[rowID].text;
+    if (currTxt != saveTxt) {
+        $("#" + taskID).css("color", "grey");
+    }
+    if (currTxt === saveTxt) {
+        $("#" + taskID).css("color", "black");
+    }
+};
+
 $("button").on("click", function() {
     var rowID = $(this).closest(".row").attr("id");
     var taskID = $("#" + rowID).children("textarea").attr("id");
@@ -49,7 +61,17 @@ $("button").on("click", function() {
         text: taskText
     };
     saveTask();
-})
+    auditTask(taskID);
+});
+
+$("textarea").on("blur", function() {
+    var taskID = $(this).attr("id");
+    auditTask(taskID);
+});
+
+setInterval(function() {
+    currentDate();
+}, (1000 * 60) * 30);
 
 currentDate();
 loadTasks();
