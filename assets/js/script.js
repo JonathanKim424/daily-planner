@@ -1,4 +1,3 @@
-var containerEl = document.querySelector(".container");
 var tasks = {};
 
 var currentDate = function() {
@@ -20,19 +19,21 @@ var currentDate = function() {
 };
 
 var loadTasks = function() {
+    var rowID;
     tasks = JSON.parse(localStorage.getItem("tasks"));
 
     if (!tasks) {
-        tasks = {
-            textID: [],
-            text: []
-        };
+        tasks = {};
+        $(".row").each(function() {
+            rowID = $(this).attr("id");
+            tasks[rowID] = {};
+        });
     }
 
-    $.each(tasks, function(list, arr) {
-        arr.forEach(function(task) {
-        })
-    })
+    $(".row").each(function() {
+        rowID = $(this).attr("id");
+        $("#" + tasks[rowID].taskID).text(tasks[rowID].text);
+    });
 };
 
 var saveTask = function() {
@@ -40,18 +41,15 @@ var saveTask = function() {
 };
 
 $("button").on("click", function() {
-    var taskID = $(this).closest("textarea").attr("id");
-
-    console.log(taskID);
-    // saveTask();
+    var rowID = $(this).closest(".row").attr("id");
+    var taskID = $("#" + rowID).children("textarea").attr("id");
+    var taskText = $("#" + taskID).val().trim();
+    tasks[rowID] = {
+        taskID: taskID,
+        text: taskText
+    };
+    saveTask();
 })
 
-var taskHandler = function(event) {
-    var targetEl = event.target;
-
-
-};
-
 currentDate();
-
-containerEl.addEventListener("click", taskHandler);
+loadTasks();
